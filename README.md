@@ -5,7 +5,7 @@ A responsive, dark-themed website for Northeast Bucket Getters — a youth baske
 ## Live Site
 
 > https://yourusername.github.io/nbg-site/  
-_(Replace this with your actual live URL once deployed)_
+
 
 ---
 
