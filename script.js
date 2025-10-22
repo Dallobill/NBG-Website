@@ -1,104 +1,79 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const hamburger = document.querySelector('.hamburger');
-  const navMenu = document.querySelector('nav ul');
 
-  if (hamburger && navMenu) {
-    hamburger.addEventListener('click', function() {
-      navMenu.classList.toggle('show');
-    });
-
-    //  Close menu when clicking a nav link
-    const navLinks = document.querySelectorAll('nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('show');
-      });
-    });
-  }
-
+document.addEventListener("DOMContentLoaded", function () {
+  initHamburgerMenu();
+  initFAQAccordion();
+  initContactForm();
 });
 
-document.addEventListener('DOMContentLoad', function() {
-  const faqQuestions = document.querySelectorAll('.faq-question');
 
-  faqQuestions.forEach(question => {
-    question.addEventListener('click', function() {
-      const answer = this.nextElementSibling;
-      const isOpen = answer.style.display === 'block';
-
-      document.querySelectorAll('.faq-answer').forEach(a => {
-        a.style.display = 'none';
-      });
-
-      answer.style.display = isOpen ? 'none' : 'block';
-
-    });
-  });
-});
-
-document.getElementById("contactForm").addEventListener("submit", function(event) {
-  const name = this.name.value.trim();
-  const email = this.email.value.trim();
-  const message = this.message.value.trim();
-  let errorMessage = "";
-
-  if (!name) errorMessage += "Name is required.\n";
-  if (!email) errorMessage += "Email is required.\n";
-  if (!message) errorMessage += "Message is required.\n";
-
-  if (errorMessage) {
-    alert(errorMessage);
-    event.preventDefault();
-  }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  const hamburger = document.getElementaryById("hamburger");
+function initHamburgerMenu() {
+  const hamburger = document.getElementById("hamburger");
   const navMenu = document.getElementById("nav-menu");
 
-  if (hamburger && navMenu) {
-    hamburger.addEventListener("click", () => {
-      navMenu.classList.toggle("show");
+  if (!hamburger || !navMenu) return;
+
+  // Toggle menu on hamburger click
+  hamburger.addEventListener("click", () => {
+    navMenu.classList.toggle("show");
+  });
+
+  // Close menu when clicking a nav link
+  const navLinks = navMenu.querySelectorAll("a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("show");
     });
-  }
-});
+  });
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-  const faqButtons = document.querySelectorAll('.faq-question');
-  
-  faqButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+function initFAQAccordion() {
+  const faqButtons = document.querySelectorAll(".faq-question");
+
+  faqButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
-      const isCurrentlyOpen = answer.style.display === 'block';
+      const isCurrentlyOpen = answer.style.display === "block";
 
-      document.querySelectorAll('.faq-answer').forEach(a => {
-        a.style.display = 'none';
+      // Close all answers first
+      document.querySelectorAll(".faq-answer").forEach((a) => {
+        a.style.display = "none";
       });
 
+      // Toggle the clicked answer
       if (!isCurrentlyOpen) {
-        answer.style.display = 'block';
+        answer.style.display = "block";
       }
     });
   });
-});
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-  const contactForm = document.querySelector('#contact form');
 
-  if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-      const submitBtn = this.querySelector('button[type="submit]');
-      const originalText = submitBtn.textContent;
+function initContactForm() {
+  const contactForm = document.querySelector("#contact form");
 
-      submitBtn.textContent = 'Sending...';
-      submitBtn.classList.add('loading');
-      submitBtn.disabled = true;
+  if (!contactForm) return;
 
-      setTimeout(() => {
-        submitBtn.textContent = originalText;
-        submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
-      }, 5000);
-    });
-  }
-});
+  // Add loading state on form submission
+  contactForm.addEventListener("submit", function (e) {
+    const submitBtn = this.querySelector('button[type="submit"]');
+
+    if (!submitBtn) return;
+
+    const originalText = submitBtn.textContent;
+
+    // Show loading state
+    submitBtn.textContent = "Sending...";
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.6";
+    submitBtn.style.cursor = "not-allowed";
+
+    // Formspree will redirect after submission
+    // Fallback timeout in case it doesn't
+    setTimeout(() => {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "1";
+      submitBtn.style.cursor = "pointer";
+    }, 5000);
+  });
+}
