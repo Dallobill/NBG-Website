@@ -1,10 +1,8 @@
-
 document.addEventListener("DOMContentLoaded", function () {
   initHamburgerMenu();
   initFAQAccordion();
   initContactForm();
 });
-
 
 function initHamburgerMenu() {
   const hamburger = document.getElementById("hamburger");
@@ -12,17 +10,38 @@ function initHamburgerMenu() {
 
   if (!hamburger || !navMenu) return;
 
-  // Toggle menu on hamburger click
-  hamburger.addEventListener("click", () => {
-    navMenu.classList.toggle("show");
+  const closeMenu = () => navMenu.classList.remove("show");
+  const toggleMenu = () => navMenu.classList.toggle("show");
+
+  // Click toggles
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Keyboard toggles (Enter / Space)
+  hamburger.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleMenu();
+    }
   });
 
   // Close menu when clicking a nav link
-  const navLinks = navMenu.querySelectorAll("a");
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      navMenu.classList.remove("show");
-    });
+  navMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => closeMenu());
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", (e) => {
+    const clickedInsideMenu = navMenu.contains(e.target);
+    const clickedHamburger = hamburger.contains(e.target);
+    if (!clickedInsideMenu && !clickedHamburger) closeMenu();
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
   });
 }
 
@@ -32,43 +51,37 @@ function initFAQAccordion() {
   faqButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
-      const isCurrentlyOpen = answer.style.display === "block";
+      const isCurrentlyOpen = answer && answer.style.display === "block";
 
-      // Close all answers first
+      // Close all answers
       document.querySelectorAll(".faq-answer").forEach((a) => {
         a.style.display = "none";
       });
 
       // Toggle the clicked answer
-      if (!isCurrentlyOpen) {
+      if (answer && !isCurrentlyOpen) {
         answer.style.display = "block";
       }
     });
   });
 }
 
-
 function initContactForm() {
   const contactForm = document.querySelector("#contact form");
-
   if (!contactForm) return;
 
-  // Add loading state on form submission
-  contactForm.addEventListener("submit", function (e) {
+  contactForm.addEventListener("submit", function () {
     const submitBtn = this.querySelector('button[type="submit"]');
-
     if (!submitBtn) return;
 
     const originalText = submitBtn.textContent;
 
-    // Show loading state
     submitBtn.textContent = "Sending...";
     submitBtn.disabled = true;
     submitBtn.style.opacity = "0.6";
     submitBtn.style.cursor = "not-allowed";
 
-    // Formspree will redirect after submission
-    // Fallback timeout in case it doesn't
+    // Fallback timeout in case redirect doesn't happen quickly
     setTimeout(() => {
       submitBtn.textContent = originalText;
       submitBtn.disabled = false;
