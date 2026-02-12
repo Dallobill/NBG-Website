@@ -70,23 +70,73 @@ function initContactForm() {
   const contactForm = document.querySelector("#contact form");
   if (!contactForm) return;
 
-  contactForm.addEventListener("submit", function () {
+  contactForm.addEventListener("submit", async function (e) {
+    e.preventDefault(); // Stop normal form submission 
+    
     const submitBtn = this.querySelector('button[type="submit"]');
-    if (!submitBtn) return;
+    const formData = new FormData(this);
 
+    // Show loading state
     const originalText = submitBtn.textContent;
-
     submitBtn.textContent = "Sending...";
     submitBtn.disabled = true;
-    submitBtn.style.opacity = "0.6";
-    submitBtn.style.cursor = "not-allowed";
 
-    // Fallback timeout in case redirect doesn't happen quickly
-    setTimeout(() => {
+    try {
+      // Submit to Formspree
+      const response = await fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        //Success! Show Message
+        showSuccessMessage(this);
+        this.reset(); // Clear the form
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      // Error handling
+      alert('Sorry, there was an error sending your message. Please try emailing us directly at northeastbucketgetters@gmail.com');
+    } finally {
+      // Reset button
       submitBtn.textContent = originalText;
       submitBtn.disabled = false;
-      submitBtn.style.opacity = "1";
-      submitBtn.style.cursor = "pointer";
-    }, 5000);
+    }
   });
+}
+
+function showSuccessMessage(form) {
+  // Create success message
+  const successDiv = document.createElement('div');
+  successDiv.style.cssText = `
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    animation: slideIn 0.4s ease;
+    `;
+
+    successDiv.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 10px;"></div>
+      <h3 style="margin: 0 0 10px 0; font-size: 1.5rem;">Message Sent</h3>
+      <p style="margin: 0; opacity: 0.95;">We'll get back to you within 24-48 hours.</p>
+      `;
+
+      // Insert after form
+      form.parentNode.insertBefore(successDiv, form.nextSibling);
+
+      // Remove message after 8 seconds
+      setTimeout(() => {
+        successDiv.style.opacity = '0';
+        successDiv.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => successDiv.remove(), 500);
+      }, 8000);
 }

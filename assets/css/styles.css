@@ -721,3 +721,14 @@ footer {
   section h2 { font-size: 1.7rem; }
   .brand-sub{ display: none; } /* cleaner header on tiny screens */
 }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
