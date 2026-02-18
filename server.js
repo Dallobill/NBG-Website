@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-const rateLimit = require('express-rate-Limit');
+const rateLimit = require('express-rate-limit');
 const contactLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 5,
@@ -22,12 +22,6 @@ app.post('/api/contact', contactLimiter, async (req,res) => {
     const{ name, email, message } = req.body;
 
     if (!name || !email || !message) {
-        return res.status(400).json({
-            error: 'All fields are required'
-        });
-    }
-
-    if (name.length > 100 || email.length > 100 || message.length > 1000) {
         return res.status(400).json({
             error: 'All fields are required'
         });
