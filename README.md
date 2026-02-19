@@ -4,7 +4,7 @@ A responsive, dark-themed website for Northeast Bucket Getters — a youth baske
 
 ## Live Site
 
-> https://dallobill.github.io/nbg-site/  
+> nbgbasketball.com 
 
 
 ---
