@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   initHamburgerMenu();
   initFAQAccordion();
   initContactForm();
@@ -10,57 +10,73 @@ function initHamburgerMenu() {
 
   if (!hamburger || !navMenu) return;
 
-  const closeMenu = () => navMenu.classList.remove("show");
-  const toggleMenu = () => navMenu.classList.toggle("show");
+  hamburger.setAttribute("aria-expanded", "false");
+  hamburger.setAttribute("aria-controls", "nav-menu");
 
-  // Click toggles
-  hamburger.addEventListener("click", (e) => {
-    e.stopPropagation();
+  const setMenuState = (isOpen) => {
+    navMenu.classList.toggle("show", isOpen);
+    hamburger.setAttribute("aria-expanded", String(isOpen));
+    hamburger.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  };
+
+  const toggleMenu = () => setMenuState(!navMenu.classList.contains("show"));
+  const closeMenu = () => setMenuState(false);
+
+  hamburger.addEventListener("click", (event) => {
+    event.stopPropagation();
     toggleMenu();
   });
 
-  // Keyboard toggles (Enter / Space)
-  hamburger.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
+  hamburger.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
       toggleMenu();
     }
   });
 
-  // Close menu when clicking a nav link
   navMenu.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => closeMenu());
+    link.addEventListener("click", closeMenu);
   });
 
-  // Close when clicking outside
-  document.addEventListener("click", (e) => {
-    const clickedInsideMenu = navMenu.contains(e.target);
-    const clickedHamburger = hamburger.contains(e.target);
-    if (!clickedInsideMenu && !clickedHamburger) closeMenu();
+  document.addEventListener("click", (event) => {
+    if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
+      closeMenu();
+    }
   });
 
-  // Close on Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 820) closeMenu();
   });
 }
 
 function initFAQAccordion() {
   const faqButtons = document.querySelectorAll(".faq-question");
 
-  faqButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const answer = btn.nextElementSibling;
-      const isCurrentlyOpen = answer && answer.style.display === "block";
+  faqButtons.forEach((button, index) => {
+    const answer = button.nextElementSibling;
+    if (!answer) return;
 
-      // Close all answers
-      document.querySelectorAll(".faq-answer").forEach((a) => {
-        a.style.display = "none";
+    const answerId = `faq-answer-${index + 1}`;
+    answer.id = answerId;
+    button.setAttribute("aria-controls", answerId);
+    button.setAttribute("aria-expanded", "false");
+
+    button.addEventListener("click", () => {
+      const wasOpen = button.getAttribute("aria-expanded") === "true";
+
+      faqButtons.forEach((otherButton) => {
+        const otherAnswer = otherButton.nextElementSibling;
+        otherButton.setAttribute("aria-expanded", "false");
+        if (otherAnswer) otherAnswer.style.display = "none";
       });
 
-      // Toggle the clicked answer
-      if (answer && !isCurrentlyOpen) {
+      if (!wasOpen) {
         answer.style.display = "block";
+        button.setAttribute("aria-expanded", "true");
       }
     });
   });
@@ -70,73 +86,53 @@ function initContactForm() {
   const contactForm = document.querySelector("#contact form");
   if (!contactForm) return;
 
-  contactForm.addEventListener("submit", async function (e) {
-    e.preventDefault(); // Stop normal form submission 
-    
-    const submitBtn = this.querySelector('button[type="submit"]');
+  contactForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const submitButton = this.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
     const formData = new FormData(this);
 
-    // Show loading state
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = "Sending...";
-    submitBtn.disabled = true;
+    submitButton.textContent = "Sending...";
+    submitButton.disabled = true;
 
     try {
-      // Submit to Formspree
       const response = await fetch(this.action, {
-        method: 'POST',
+        method: "POST",
         body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { Accept: "application/json" },
       });
 
-      if (response.ok) {
-        //Success! Show Message
-        showSuccessMessage(this);
-        this.reset(); // Clear the form
-      } else {
-        throw new Error('Form submission failed');
-      }
+      if (!response.ok) throw new Error("Form submission failed");
+
+      showSuccessMessage(this);
+      this.reset();
     } catch (error) {
-      // Error handling
-      alert('Sorry, there was an error sending your message. Please try emailing us directly at northeastbucketgetters@gmail.com');
+      alert(
+        "Sorry, there was an error sending your message. Please email us directly at northeastbucketgetters@gmail.com."
+      );
     } finally {
-      // Reset button
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
+      submitButton.textContent = originalText;
+      submitButton.disabled = false;
     }
   });
 }
 
 function showSuccessMessage(form) {
-  // Create success message
-  const successDiv = document.createElement('div');
-  successDiv.style.cssText = `
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-    padding: 20px;
-    border-radius: 14px;
-    margin-top: 20px;
-    text-align: center;
-    font-weight: 700;
-    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
-    animation: slideIn 0.4s ease;
-    `;
+  const existingMessage = document.querySelector(".form-success-message");
+  if (existingMessage) existingMessage.remove();
 
-    successDiv.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 10px;"></div>
-      <h3 style="margin: 0 0 10px 0; font-size: 1.5rem;">Message Sent</h3>
-      <p style="margin: 0; opacity: 0.95;">We'll get back to you within 24-48 hours.</p>
-      `;
+  const successMessage = document.createElement("div");
+  successMessage.className = "form-success-message";
+  successMessage.setAttribute("role", "status");
+  successMessage.innerHTML = `
+    <h3>Message sent.</h3>
+    <p>Thanks for reaching out. NBG will follow up as soon as possible.</p>
+  `;
 
-      // Insert after form
-      form.parentNode.insertBefore(successDiv, form.nextSibling);
+  form.parentNode.insertBefore(successMessage, form.nextSibling);
 
-      // Remove message after 8 seconds
-      setTimeout(() => {
-        successDiv.style.opacity = '0';
-        successDiv.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => successDiv.remove(), 500);
-      }, 8000);
+  setTimeout(() => {
+    successMessage.remove();
+  }, 8000);
 }
