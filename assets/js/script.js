@@ -1,3 +1,15 @@
+// Load responsive overrides after the base stylesheet.
+// Keeping this separate lets us harden phone/tablet layouts without destabilizing desktop CSS.
+(() => {
+  if (!document.querySelector('link[data-nbg-responsive="true"]')) {
+    const responsiveStyles = document.createElement("link");
+    responsiveStyles.rel = "stylesheet";
+    responsiveStyles.href = "assets/css/responsive.css";
+    responsiveStyles.setAttribute("data-nbg-responsive", "true");
+    document.head.appendChild(responsiveStyles);
+  }
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   initHamburgerMenu();
   initFAQAccordion();
@@ -48,8 +60,9 @@ function initHamburgerMenu() {
     if (event.key === "Escape") closeMenu();
   });
 
+  // Responsive navigation collapses at 1080px.
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 820) closeMenu();
+    if (window.innerWidth > 1080) closeMenu();
   });
 }
 

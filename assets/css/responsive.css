@@ -1,0 +1,531 @@
+/* Responsive hardening for NBG Basketball
+   Loaded after styles.css so these rules win without disturbing desktop styling. */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.header-inner > *,
+.hero-inner > *,
+.about-grid > *,
+.contact-grid > *,
+.aau-grid > *,
+.feature-grid > *,
+.training-grid > *,
+.process-grid > *,
+.media-grid > *,
+.benchmark-grid > * {
+  min-width: 0;
+}
+
+.training-meta span,
+.email-link,
+.contact-copy,
+.footer-links a,
+.faq-answer,
+.feature-card p,
+.training-card p,
+.training-card li {
+  overflow-wrap: anywhere;
+}
+
+/* Large desktop: preserve a strong two-column hero and comfortable max width. */
+@media (min-width: 1181px) {
+  .hero-inner {
+    grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+  }
+
+  .hero-media > img {
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+}
+
+/* Laptop / small desktop: collapse navigation earlier so it never crowds the brand. */
+@media (max-width: 1080px) {
+  .header-inner {
+    position: relative;
+  }
+
+  .hamburger {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  .site-nav ul {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    padding: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    background: rgba(5, 7, 12, 0.99);
+    box-shadow: var(--shadow);
+  }
+
+  .site-nav ul.show {
+    display: flex;
+  }
+
+  .site-nav a,
+  .site-nav .nav-cta {
+    width: 100%;
+    margin: 0;
+    padding: 13px 14px;
+  }
+
+  .hero-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.75fr);
+    gap: 32px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 5.8vw, 58px);
+  }
+
+  .section {
+    padding: 56px 40px;
+  }
+
+  .training-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .training-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Tablet: switch major layouts to one column before they start feeling squeezed. */
+@media (max-width: 860px) {
+  html {
+    scroll-padding-top: 82px;
+  }
+
+  .hero {
+    padding-top: 44px;
+  }
+
+  .hero-inner,
+  .about-grid,
+  .contact-grid,
+  .aau-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy {
+    max-width: 720px;
+  }
+
+  .hero-media {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .hero-media > img {
+    width: 100%;
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  .hero-media-card {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .feature-grid,
+  .process-grid,
+  .media-grid,
+  .benchmark-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-photo {
+    width: min(100%, 520px);
+  }
+
+  .aau-grid .cta-button {
+    justify-self: start;
+  }
+
+  .contact-grid {
+    gap: 34px;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-social {
+    grid-column: 1 / -1;
+    justify-items: start;
+    text-align: left;
+  }
+}
+
+/* Phone: mobile-first visual hierarchy and tap targets. */
+@media (max-width: 640px) {
+  :root {
+    --radius: 16px;
+    --radius-sm: 13px;
+  }
+
+  body {
+    line-height: 1.55;
+  }
+
+  .header-inner,
+  .hero,
+  .section,
+  .footer-inner {
+    width: calc(100% - 24px);
+  }
+
+  .header-inner {
+    min-height: 68px;
+    gap: 10px;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 8px;
+    flex: 1 1 auto;
+  }
+
+  .brand img {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+  }
+
+  .brand-name {
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .hamburger {
+    width: 42px;
+    height: 42px;
+  }
+
+  .site-nav ul {
+    top: calc(100% + 6px);
+    border-radius: 12px;
+  }
+
+  .site-nav a,
+  .site-nav .nav-cta {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero {
+    padding: 34px 0 20px;
+  }
+
+  .hero-inner {
+    gap: 26px;
+  }
+
+  .eyebrow {
+    margin-bottom: 8px;
+    font-size: 10px;
+    letter-spacing: 1.35px;
+  }
+
+  .hero h1 {
+    margin-bottom: 16px;
+    font-size: clamp(32px, 9.4vw, 42px);
+    line-height: 1.04;
+    letter-spacing: -1.15px;
+  }
+
+  .hero-lead {
+    margin-bottom: 12px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .hero-support {
+    margin-bottom: 18px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .hero-actions .cta-button,
+  .centered-actions .cta-button {
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .trust-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 20px;
+  }
+
+  .trust-row span {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 8px 9px;
+    border-radius: 10px;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .trust-row span:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .hero-media::before {
+    inset: -8px 10px 12px -8px;
+  }
+
+  .hero-media > img {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+    border-radius: 18px;
+  }
+
+  .hero-media-card {
+    position: static;
+    width: 100%;
+    max-width: none;
+    margin-top: 10px;
+    padding: 13px 14px;
+  }
+
+  .section {
+    margin: 22px auto;
+    padding: 36px 18px;
+    border-radius: 15px;
+  }
+
+  .section-heading {
+    margin-bottom: 24px;
+    text-align: left;
+  }
+
+  .section h2 {
+    margin-bottom: 12px;
+    font-size: clamp(27px, 8vw, 34px);
+    line-height: 1.1;
+    letter-spacing: -0.8px;
+  }
+
+  .section-heading > p:last-child,
+  .about-copy > p,
+  .contact-copy > p,
+  .aau-grid p {
+    font-size: 14px;
+  }
+
+  .feature-grid,
+  .training-grid,
+  .process-grid,
+  .media-grid,
+  .benchmark-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .training-card:last-child {
+    grid-column: auto;
+  }
+
+  .feature-card,
+  .training-card,
+  .process-grid article {
+    min-height: 0;
+    padding: 20px;
+  }
+
+  .feature-number {
+    margin-bottom: 14px;
+  }
+
+  .feature-card h3,
+  .process-grid h3 {
+    font-size: 17px;
+  }
+
+  .training-card h3 {
+    margin-bottom: 10px;
+    font-size: 22px;
+  }
+
+  .training-card ul {
+    margin-bottom: 16px;
+  }
+
+  .training-meta {
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-top: 15px;
+  }
+
+  .training-meta span {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .evaluation-callout {
+    margin-top: 14px;
+    padding: 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .evaluation-callout h3 {
+    font-size: 21px;
+  }
+
+  .evaluation-callout .cta-button,
+  .aau-grid .cta-button {
+    width: 100%;
+  }
+
+  .process-grid article {
+    border-left-width: 3px;
+  }
+
+  .process-grid article > span {
+    margin-bottom: 12px;
+  }
+
+  .media-card img {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .benchmark-grid > div {
+    padding: 16px;
+  }
+
+  .about-grid {
+    gap: 24px;
+  }
+
+  .about-photo-wrap::after {
+    display: none;
+  }
+
+  .about-photo {
+    width: 100%;
+    max-height: 420px;
+    aspect-ratio: 4 / 5;
+  }
+
+  .faq-question {
+    min-height: 52px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .faq-answer {
+    padding: 0 16px 16px;
+    font-size: 13px;
+  }
+
+  .contact-grid {
+    gap: 24px;
+  }
+
+  .contact-section input {
+    min-height: 52px;
+  }
+
+  .contact-section textarea {
+    min-height: 140px;
+  }
+
+  .contact-section button {
+    min-height: 52px;
+  }
+
+  footer {
+    margin-top: 38px;
+  }
+
+  .footer-inner {
+    padding: 30px 0;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+  }
+
+  .footer-links a,
+  .footer-social a {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-social {
+    grid-column: auto;
+  }
+}
+
+/* Narrow phones: avoid cramped two-column chips/footer links. */
+@media (max-width: 390px) {
+  .header-inner,
+  .hero,
+  .section,
+  .footer-inner {
+    width: calc(100% - 20px);
+  }
+
+  .hero h1 {
+    font-size: 31px;
+  }
+
+  .trust-row,
+  .footer-links {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-row span:first-child {
+    grid-column: auto;
+  }
+
+  .section {
+    padding: 32px 16px;
+  }
+
+  .feature-card,
+  .training-card,
+  .process-grid article {
+    padding: 18px;
+  }
+}
